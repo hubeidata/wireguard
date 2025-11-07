@@ -1,0 +1,31 @@
+version: "3.8"
+
+services:
+  wireguard:
+    image: ghcr.io/linuxserver/wireguard:latest
+    container_name: wireguard
+    network_mode: "host"               # LATENCIA: host mode recomendado
+    cap_add:
+      - NET_ADMIN
+      - SYS_MODULE
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=America/Lima
+      - SERVERURL=maxtelperu.com
+      - SERVERPORT=51820
+      - PEERS=3
+      - PEERDNS=1.1.1.1
+      - INTERNAL_SUBNET=10.13.13.0/24
+    volumes:
+      - ./config:/config
+      - /lib/modules:/lib/modules:ro
+    sysctls:
+      net.ipv4.ip_forward: '1'
+      net.core.rmem_max: '16777216'        # buffers UDP recv
+      net.core.wmem_max: '16777216'        # buffers UDP send
+      net.core.netdev_max_backlog: '5000'
+      net.netfilter.nf_conntrack_max: '262144'
+      # opcional: aumentar timeouts de conntrack UDP si tu NAT cierra rápido
+      net.netfilter.nf_conntrack_udp_timeout: '30'
+    restart: unless-stopped
