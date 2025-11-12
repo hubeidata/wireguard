@@ -9,4 +9,4 @@ net.netfilter.nf_conntrack_udp_timeout=30
 EOF
 
 sudo sysctl --system
-sudo docker compose up -d wireguard
+sudo docker-compose up -d wireguard
